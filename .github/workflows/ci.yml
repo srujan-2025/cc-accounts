@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: brew install shellcheck jq
+      - name: shellcheck
+        run: shellcheck -S warning cc-accounts.sh install-shell.sh tests/smoke.sh
+      - name: Python syntax
+        run: python3 -m py_compile make-launchers.py
+      - name: Smoke tests
+        run: bash tests/smoke.sh
